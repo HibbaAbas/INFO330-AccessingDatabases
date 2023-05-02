@@ -19,6 +19,7 @@ public class TeamAnalyzer {
         // The rest is up to you.
         try (Connection con = DriverManager.getConnection("jdbc:sqlite:pokemon.db")) {
             for (String arg : args) {
+                print("Testing");
                 print("Analyzing " + arg);
                 
                 //check effectivness against each type
