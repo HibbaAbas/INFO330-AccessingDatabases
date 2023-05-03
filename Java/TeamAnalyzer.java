@@ -17,7 +17,8 @@ public class TeamAnalyzer {
 
         // This bit of JDBC magic I provide as a free gift :-)
         // The rest is up to you.
-        try (Connection con = DriverManager.getConnection("jdbc:sqlite:pokemon.db")) {
+        try (Connection con =
+        DriverManager.getConnection("jdbc:sqlite:/pokemon.db")) {
             for (String arg : args) {
                 print("Testing");
                 print("Analyzing " + arg);
@@ -25,8 +26,7 @@ public class TeamAnalyzer {
                 //check effectivness against each type
                 for(String type : types) {
                     //create query 
-                    String query = "SELECT against_" + type + " FROM pokemon "
-                        + "WHERE pokedex_number = " + arg;
+                    String query = "SELECT against_" + type + " FROM imported_pokemon_data " + "WHERE pokedex_number = " + arg;
                     //execute query
                     Statement exec_query = con.createStatement();
 
