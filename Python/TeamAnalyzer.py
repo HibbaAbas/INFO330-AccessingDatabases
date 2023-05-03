@@ -1,6 +1,5 @@
 import sqlite3  # This is the package for all sqlite3 access in Python
 import sys      # This helps with command-line parameters
-import os
 
 # All the "against" column suffixes:
 types = ["bug","dark","dragon","electric","fairy","fight",
@@ -25,34 +24,28 @@ for i, arg in enumerate(sys.argv):
 
     conn = sqlite3.connect('../pokemon.sqlite')
     c = conn.cursor()
-    print(os.path.abspath('pokemon.db'))
 
+    #Here i am getting the name of the pokemon from its pokedex_number
     c.execute("SELECT name FROM pokemon WHERE pokedex_number = ?", (arg,))
     pokemon_name = c.fetchone()
-    print(pokemon_name)
 
+    #Then the code will use the name to get the pokemon's types 
     c.execute("SELECT type1, type2 FROM pokemon_types_view WHERE name = ?", pokemon_name)
     results = c.fetchone()
     type1 = results[0]
     type2 = results[1]
     
-    #Now that I have the types, I need to find the type ids
-    c.execute("SELECT id FROM type WHERE name = ?", (type1,))
-    type1_id = c.fetchone()
-
-    c.execute("SELECT id FROM type WHERE name = ?", (type2,))
-    type2_id = c.fetchone()
-
-    
+   #Creating empty arrays that will hold pokemon's strengths and weaknesses 
     strengths = []
     weakness = []
 
 
-    #Now I can access the against_ values
+    #Then it loops through all the types and finds pokemon's attack value
     for x in types:
         c.execute("SELECT against_" + x + " FROM battle WHERE type1name = ? AND type2name = ?", (type1, type2))
         against = c.fetchone()[0]
-
+        
+        #checks if it is a strength or weakness
         if against >  1.0:
             strengths.append(x)
         elif against <  1.0:
@@ -60,15 +53,10 @@ for i, arg in enumerate(sys.argv):
 
 
     #put it all together
-    print(str(pokemon_name) + "(" + str(type1) + "" + str(type2) + ") is strong against " + str(strengths) + " but weak against " + str(weakness))
-
-
+    print(str(pokemon_name) + "(" + str(type1) + " " + str(type2) + ") is strong against " + str(strengths) + " but weak against " + str(weakness))
 
     c.close()
     conn.close()
-
-
-
 
 answer = input("Would you like to save this team? (Y)es or (N)o: ")
 if answer.upper() == "Y" or answer.upper() == "YES":
